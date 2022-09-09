@@ -918,15 +918,6 @@ List_Form' >> "${tempfile}.sh"
 		                --add-entry="Regras:
 (Padrão: u:everyone:r)
 " \
-				--add-entry="Comentário:
-(Opcional)
-" \
-				--add-entry="Cota de disco:
-(Padrão: Unlimited)
-" \
-				--add-entry="Tolerância de cota:
-(Padrão: None)
-" \
 				--add-combo="Permitir arq. compactados:
 (Padrão: No)
 " --combo-values="|No|Yes" >"$tempfile" 2>/dev/null
@@ -940,9 +931,9 @@ List_Form' >> "${tempfile}.sh"
 				sharetemplate="$(sed -n '3p' "$tempfile")" && export sharetemplate
 				sharepath="$(sed -n '4p' "$tempfile")" && export sharepath
 				sharerule="$(sed -n '5p' "$tempfile")" && export sharerule
-				sharecomment="$(sed -n '6p' "$tempfile")" && export sharecomment
-				sharequota="$(sed -n '7p' "$tempfile")" && export sharequota
-				sharetolerance="$(sed -n '8p' "$tempfile")" && export sharetolerance
+				#sharecomment="$(sed -n '6p' "$tempfile")" && export sharecomment
+				#sharequota="$(sed -n '7p' "$tempfile")" && export sharequota
+				#sharetolerance="$(sed -n '8p' "$tempfile")" && export sharetolerance
 				
 				sharehidden="$(sed -n '10p' "$tempfile")" && export sharehidden
 				shareguest="$(sed -n '11p' "$tempfile")" && export shareguest
@@ -952,7 +943,7 @@ List_Form' >> "${tempfile}.sh"
 
 				local ARG status
 				
-				ARG='sharemode sharename sharetemplate sharepath sharerule sharecomment sharequota sharetolerance  sharehidden shareguest sharecfgfile'
+				ARG='sharemode sharename sharetemplate sharepath sharerule sharehidden shareguest sharecfgfile'
 
 				for arg in $ARG; do
 					[ "$(echo "${!arg}" | sed -r 's/[[:blank:]]*//g')" ] || unset "$arg"
@@ -1036,7 +1027,7 @@ List_Form' >> "${tempfile}.sh"
 				local function tempfile
 
 				function='cid-gtk >> Menu_Out >> Sharemanager >> Sharedel'
-				PAR='--column=& Mode& --column=& Name& --column=& Template& --column=& Path& --column=& Comment& --column=& Disk Quota& --column=& Tolerance Quota& --column=& Subdirs Quotas& --column=& Hidden& --column=& Guest& --column=& Add Config File& --column=& Rules& @'
+				PAR='--column=& Mode& --column=& Name& --column=& Template& --column=& Path& --column=& Hidden& --column=& Rules& @'
 				tempfile="$(Tempfile 'body')"
 
 				rm -f "$tempfile"
@@ -1048,7 +1039,7 @@ List_Form' >> "${tempfile}.sh"
 					local str ; str="$(Get_ShareRule $int)"
 
 					# shellcheck disable=SC2027,SC2086,SC2153
-					echo "FALSE $int &${SHAREMODE[${int}]^}& &${SHARENAME[${int}]}& &${SHARETEMPLATE[${int}]:-None}& &${SHAREPATH[${int}]}& &${SHARECOMMENT[${int}]}& &$(ReadQuota "${SHAREQUOTA[${int}]:-None}")& &$(ReadQuota "${SHARETOLERANCE[${int}]:-None}")& &${SHAREHIDDEN[${int}]}& &${SHAREGUEST[${int}]}& &${SHARECFGFILE[${int}]:-None}& &"${str}"& @" >>"$tempfile"
+					echo "FALSE $int &${SHAREMODE[${int}]^}& &${SHARENAME[${int}]}& &${SHARETEMPLATE[${int}]:-None}& &${SHAREPATH[${int}]}& &${SHAREHIDDEN[${int}]}& &"${str}"& @" >>"$tempfile"
 				done
 
 				Form_CheckList "$tempfile" 'Remove shares' '1360'
