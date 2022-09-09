@@ -901,43 +901,34 @@ List_Form' >> "${tempfile}.sh"
 
 				# shellcheck disable=SC2153
 				if ! zenity --forms \
-				--title="Add/Update share..." --window-icon="${0%/*}/icons/cid.png" --separator="
-"               --ok-label="Add/Update" --cancel-label="Back" --text="\n Share Info: \n" \
-				--add-combo="Mode:
-(Default: Common)
+				--title="Compartilhamentos" --window-icon="${0%/*}/icons/cid.png" --separator="
+"               --ok-label="Aplicar" --cancel-label="Voltar" --text="\n Informações: \n" \
+				--add-combo="Modo:
+(Padrão: Common)
 " --combo-values="|Common|Userfolder|Printer" \
 				--add-entry="Name:
-(Share Name)
+(Nome do compartilhamento)
 " \
-				--add-combo="Template:
-(Select Model/Update Share)
+				--add-combo="Atualizar comp. existente:
+(Selecione o compartilhamento)
 " --combo-values="$(for ((int=0; int < ${#SHARENAME[*]}; int++)); do echo -n \|"${SHARENAME[${int}]}"; done)" \
-				--add-entry="Path:
-(Folder/CUPS Printer Name)
+				--add-entry="Caminho da pasta:
+(Pasta/Impressora)
 " \
-		                --add-entry="Rule:
-(Default: u:everyone:r)
+		                --add-entry="Regras:
+(Padrão: u:everyone:r)
 " \
-				--add-entry="Comment:
-(Optional)
+				--add-entry="Comentário:
+(Opcional)
 " \
-				--add-entry="Disk Quota Size:
-(Default: Unlimited)
+				--add-entry="Cota de disco:
+(Padrão: Unlimited)
 " \
-				--add-entry="Tolerance Quota Size:
-(Default: None)
+				--add-entry="Tolerância de cota:
+(Padrão: None)
 " \
-				--add-combo="Apply Quota to Fst-level of Subdirs:
-(Default: No)
-" --combo-values="|No|Yes" \
-				--add-combo="Hidden:
-(Default: No)
-" --combo-values="|No|Yes" \
-				--add-combo="Allow Guest:
-(Default: No)
-" --combo-values="|No|Yes" \
-				--add-combo="Add Config File:
-(Default: No)
+				--add-combo="Permitir arq. compactados:
+(Padrão: No)
 " --combo-values="|No|Yes" >"$tempfile" 2>/dev/null
 				then
 					rm -f "$tempfile"
@@ -952,7 +943,7 @@ List_Form' >> "${tempfile}.sh"
 				sharecomment="$(sed -n '6p' "$tempfile")" && export sharecomment
 				sharequota="$(sed -n '7p' "$tempfile")" && export sharequota
 				sharetolerance="$(sed -n '8p' "$tempfile")" && export sharetolerance
-				sharequotasubd="$(sed -n '9p' "$tempfile")" && export sharequotasubd
+				
 				sharehidden="$(sed -n '10p' "$tempfile")" && export sharehidden
 				shareguest="$(sed -n '11p' "$tempfile")" && export shareguest
 				sharecfgfile="$(sed -n '12p' "$tempfile")" && export sharecfgfile
@@ -961,7 +952,7 @@ List_Form' >> "${tempfile}.sh"
 
 				local ARG status
 				
-				ARG='sharemode sharename sharetemplate sharepath sharerule sharecomment sharequota sharetolerance sharequotasubd sharehidden shareguest sharecfgfile'
+				ARG='sharemode sharename sharetemplate sharepath sharerule sharecomment sharequota sharetolerance  sharehidden shareguest sharecfgfile'
 
 				for arg in $ARG; do
 					[ "$(echo "${!arg}" | sed -r 's/[[:blank:]]*//g')" ] || unset "$arg"
@@ -1057,7 +1048,7 @@ List_Form' >> "${tempfile}.sh"
 					local str ; str="$(Get_ShareRule $int)"
 
 					# shellcheck disable=SC2027,SC2086,SC2153
-					echo "FALSE $int &${SHAREMODE[${int}]^}& &${SHARENAME[${int}]}& &${SHARETEMPLATE[${int}]:-None}& &${SHAREPATH[${int}]}& &${SHARECOMMENT[${int}]}& &$(ReadQuota "${SHAREQUOTA[${int}]:-None}")& &$(ReadQuota "${SHARETOLERANCE[${int}]:-None}")& &${SHAREQUOTASUBD[${int}]}& &${SHAREHIDDEN[${int}]}& &${SHAREGUEST[${int}]}& &${SHARECFGFILE[${int}]:-None}& &"${str}"& @" >>"$tempfile"
+					echo "FALSE $int &${SHAREMODE[${int}]^}& &${SHARENAME[${int}]}& &${SHARETEMPLATE[${int}]:-None}& &${SHAREPATH[${int}]}& &${SHARECOMMENT[${int}]}& &$(ReadQuota "${SHAREQUOTA[${int}]:-None}")& &$(ReadQuota "${SHARETOLERANCE[${int}]:-None}")& &${SHAREHIDDEN[${int}]}& &${SHAREGUEST[${int}]}& &${SHARECFGFILE[${int}]:-None}& &"${str}"& @" >>"$tempfile"
 				done
 
 				Form_CheckList "$tempfile" 'Remove shares' '1360'
