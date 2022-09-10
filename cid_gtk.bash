@@ -909,7 +909,7 @@ List_Form' >> "${tempfile}.sh"
 				--add-combo="Atualizar comp. existente:
 (Selecione o compartilhamento)
 " --combo-values="$(for ((int=0; int < ${#SHARENAME[*]}; int++)); do echo -n \|"${SHARENAME[${int}]}"; done)" \
-				--add-entry="Caminho da pasta:
+				 --add-entry="Caminho da pasta:
 (Pasta/Impressora)
 " \
 		                --add-entry="Regras:
