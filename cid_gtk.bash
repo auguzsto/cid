@@ -903,9 +903,6 @@ List_Form' >> "${tempfile}.sh"
 				if ! zenity --forms \
 				--title="Compartilhamentos" --window-icon="${0%/*}/icons/cid.png" --separator="
 "               --ok-label="Aplicar" --cancel-label="Voltar" --text="\n Informações: \n" \
-				--add-combo="Modo:
-(Padrão: Common)
-" --combo-values="|Common|Userfolder|Printer" \
 				--add-entry="Name:
 (Nome do compartilhamento)
 " \
@@ -926,24 +923,24 @@ List_Form' >> "${tempfile}.sh"
 					Sharemanager
 				fi
 
-				sharemode="$(sed -n '1p' "$tempfile")" && export sharemode="${sharemode,,}"
-				sharename="$(sed -n '2p' "$tempfile")" && export sharename
-				sharetemplate="$(sed -n '3p' "$tempfile")" && export sharetemplate
-				sharepath="$(sed -n '4p' "$tempfile")" && export sharepath
-				sharerule="$(sed -n '5p' "$tempfile")" && export sharerule
+				#sharemode="$(sed -n '1p' "$tempfile")" && export sharemode="${sharemode,,}"
+				sharename="$(sed -n '1p' "$tempfile")" && export sharename
+				sharetemplate="$(sed -n '2p' "$tempfile")" && export sharetemplate
+				sharepath="$(sed -n '3p' "$tempfile")" && export sharepath
+				sharerule="$(sed -n '4p' "$tempfile")" && export sharerule
 				#sharecomment="$(sed -n '6p' "$tempfile")" && export sharecomment
 				#sharequota="$(sed -n '7p' "$tempfile")" && export sharequota
 				#sharetolerance="$(sed -n '8p' "$tempfile")" && export sharetolerance
 				
-				sharehidden="$(sed -n '10p' "$tempfile")" && export sharehidden
-				shareguest="$(sed -n '11p' "$tempfile")" && export shareguest
-				sharecfgfile="$(sed -n '12p' "$tempfile")" && export sharecfgfile
+				sharehidden="$(sed -n '5p' "$tempfile")" && export sharehidden
+				#shareguest="$(sed -n '11p' "$tempfile")" && export shareguest
+				#sharecfgfile="$(sed -n '12p' "$tempfile")" && export sharecfgfile
 
 				rm -f "$tempfile"
 
 				local ARG status
 				
-				ARG='sharemode sharename sharetemplate sharepath sharerule sharehidden shareguest sharecfgfile'
+				ARG='sharename sharetemplate sharepath sharerule sharehidden'
 
 				for arg in $ARG; do
 					[ "$(echo "${!arg}" | sed -r 's/[[:blank:]]*//g')" ] || unset "$arg"
