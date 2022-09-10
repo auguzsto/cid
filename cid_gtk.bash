@@ -903,7 +903,7 @@ List_Form' >> "${tempfile}.sh"
 				if ! zenity --forms \
 				--title="Compartilhamentos" --window-icon="${0%/*}/icons/cid.png" --separator="
 "               --ok-label="Aplicar" --cancel-label="Voltar" --text="\n Informações: \n" \
-				--add-entry="Name:
+				--add-entry="Nome:
 (Nome do compartilhamento)
 " \
 				--add-combo="Atualizar comp. existente:
