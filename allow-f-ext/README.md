@@ -1,4 +1,4 @@
-#Exemplificação.
+# Exemplificação.
 No diretório Models terá alguns modelos(.txt) de vetos files, como por exemplo "Permitir Imagens e Compactados" ou "Permitir Imagens". Exemplo: No modelo "Permitir Imagens e Compactados", como próprio nome já diz, permite a exceção de extensões .PNG, .JPG, .BMP, .RAR, .ZIP. 
 
 #Padrão do veto files.
