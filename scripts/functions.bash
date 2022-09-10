@@ -399,6 +399,15 @@ Config_smbfile () {
 	printcap name = cups
 	printing = cups
 
+	#Lixeira samba
+	recycle:repository = .lixeira
+	recycle:keeptree = True
+	recycle:maxsize = 0
+	recycle:versions = True
+	recycle:noversions = .doc|.xls|.ppt|.pdf
+	recycle:touch = True
+	recycle:exclude = *.tmp *.temp *.obj *.~??
+
 	# Kerberos settings
 	realm = ${FQDN^^}
 	kerberos method = dedicated keytab
@@ -412,6 +421,7 @@ Config_smbfile () {
 	winbind offline logon = Yes
 	template homedir = $WBD_USERPROFILE
 	template shell = $WBD_USERSHELL" > "$SMBFILE"
+
 
 	if ! Check_Options 1; then sed -ri '/(smb ports|disable netbios)/d' "$SMBFILE"; fi
 	if Check_Options 2; then sed -i '/winbind refresh tickets = Yes/d' "$SMBFILE"; fi
@@ -440,7 +450,7 @@ Config_smbfile () {
 
 		echo "	idmap config $DOMAIN : backend = ${BACKEND}
 	idmap config $DOMAIN : schema_mode = rfc2307
-	idmap config $DOMAIN : range = ${MIN_ID}-${MAX_ID}
+	idmap config $DOMAIN : range = ${MIN_ID}-${MAX_ID}*
 	idmap config * : range = $((MAX_ID+1))-$((MAX_ID+(ID_RANGE_SIZE*(MAX_NUM_DOMAINS-1))))" >> "$SMBFILE"
 	else
 		if [ "$MAX_LOCAL_ID" -ge 10000 ]; then
@@ -457,6 +467,7 @@ Config_smbfile () {
 
 	echo -e "\tidmap config * : backend = autorid\n\tidmap config * : rangesize = ${ID_RANGE_SIZE}" >> "$SMBFILE"
 
+
 	if Check_Options 10 && [ -s "$ADDSMBFILE" ]; then
 		Filter_AddCfgFile "$ADDSMBFILE"
 	fi
@@ -470,8 +481,9 @@ Config_smbfile () {
 			echo -e "\n[$(if [ "${SHAREMODE[${int}]}" = 'userfolder' ]; then echo 'homes'; else echo "${SHARENAME[${int}]}"; fi)]
 	comment = ${SHARECOMMENT[${int}]}
 	read only = No
-	guest ok = ${SHAREGUEST[${int}]}
-	browseable = $(if [ "${SHAREHIDDEN[${int}]}" = 'No' ]; then echo 'Yes'; else echo 'No'; fi)" >> "$SMBFILE"
+	guest ok = No
+	browseable = No
+	veto files = $(if [ "${SHAREHIDDEN[${int}]}" = 'No' ]; then echo '/*.rar/*.zip/*.bat/*.cmd/*.nds/*.pif/*.com/*.scr/*.exe/*.dll/*.msp/*.msi/*.msu/*.ini/*.inf/*.jad/*.jar/*.reg/*.vbs/*.dat/*.cab/*.html/*.php/*.png/*.bmp/*.jpg/*.ps1/*.scr/*.ws/*.GADGET/*.msp/*.com/*.cpl/*.msc/*.etc/*.vbe/*.js/*.se/*.wsf/*.wsc/*.ps2/*.ps2xml/*.psc1/*.psc2/*.msh/*.msh1/*.msh1xml/*.mshxml/*.scf/*.lnk/*.inf/*.DOCM/*.DOTM/*.XLTM/*.XLAM/*.PPTM/*.POTM/*.PPAM/*.PPSM/*.SLDM/*.mp3/*.mp4/*.mkv/*.webp/*.xdvi/*.gz/*.ARC/*.arj/*.bin/*dmg/*.gzip/*.hqx/*.sit/*.sitx/*.se/*.ace/*.uu/*.uue/*.7z'; else echo '/*.bat/*.cmd/*.nds/*.pif/*.com/*.scr/*.exe/*.dll/*.msp/*.msi/*.msu/*.ini/*.inf/*.jad/*.jar/*.reg/*.vbs/*.dat/*.cab/*.html/*.php/*.png/*.bmp/*.jpg/*.ps1/*.scr/*.ws/*.GADGET/*.msp/*.com/*.cpl/*.msc/*.etc/*.vbe/*.js/*.se/*.wsf/*.wsc/*.ps2/*.ps2xml/*.psc1/*.psc2/*.msh/*.msh1/*.msh1xml/*.mshxml/*.scf/*.lnk/*.inf/*.DOCM/*.DOTM/*.XLTM/*.XLAM/*.PPTM/*.POTM/*.PPAM/*.PPSM/*.SLDM/*.mp3/*.mp4/*.mkv/*.webp/*.xdvi/*.gz/*.ARC/*.arj/*.bin/*dmg/*.gzip/*.hqx/*.sit/*.sitx/*.se/*.ace/*.uu/*.uue/*.7z'; fi)" >> "$SMBFILE"
 
 			[ -n "${SHARETEMPLATE[${int}]}" ] && echo -e "\tcopy = ${SHARETEMPLATE[${int}]}" >> "$SMBFILE"
 
@@ -491,30 +503,27 @@ Config_smbfile () {
 								;;
 
 				'common'		)
-									[ "${SHAREQUOTASUBD[${int}]}" = 'Yes' ] && echo "	root preexec = ${SCRIPTDIR}/setquota.bash \"${SHAREPATH[${int}]}\" ${SHAREQUOTA[${int}]} ${SHARETOLERANCE[${int}]}" >> "$SMBFILE"
+									[ "${SHAREQUOTASUBD[${int}]}" = 'Yes' ] && echo "	root preexec = ${SCRIPTDIR}/setquota.bash \"${SHAREPATH[${int}]}\" ${SHAREQUOTA[${int}]}" >> "$SMBFILE"
 
 									echo "	path = \"${SHAREPATH[${int}]}\"
 	map acl inherit = Yes
 	store dos attributes = Yes
-	vfs objects = acl_xattr" >> "$SMBFILE"
+	vfs objects = acl_xattr recycle
+	recycle:repository = .lixeira
+	recycle:keeptree = True
+	recycle:maxsize = 0
+	recycle:versions = True
+	recycle:noversions = .doc|.xls|.ppt|.pdf
+	recycle:touch = True
+	recycle:exclude = *.tmp *.temp *.obj *.~??" >> "$SMBFILE"
 								;;
 			esac
 
 			[ -s "${SHARECFGFILE[${int}]}" ] && Filter_AddCfgFile "${SHARECFGFILE[${int}]}" "${SHAREMODE[${int}]}"
 		done
 	fi
-
-	[ "$bool" ] && echo "
-[printers]
-	path = $SMBSPOOLDIR
-	printable = yes
-
-[print$]
-	comment = Printer Drivers for Windows Clients
-	path = $PRTDRVDIR
-	browseable = Yes
-	read only = No
-	guest ok = No" >> "$SMBFILE"
+	
+cat /usr/share/cid/allow-f-ext/smb.conf >> "$SMBFILE"
 }
 
 # Function: Config_ntpfile
@@ -2143,7 +2152,7 @@ Addshare () {
 
 				# shellcheck disable=SC2119
 				chgrp -R "$(Get_AdminsGroup)" "$sharepath"
-				chmod 770 "$sharepath"
+				chmod 771 "$sharepath"
 			fi
 
 			setfacl -R -${crt:-m} "$sharerule" "$sharepath"
@@ -2162,7 +2171,7 @@ Addshare () {
 
 # Function: Rmshare
 Rmshare () {
-	[ "${SHAREMODE[${1}]}" = 'common' ] && setfacl -R -b "${SHAREPATH[${1}]}" && chgrp -R root "${SHAREPATH[${1}]}"
+	[ "${SHAREMODE[${1}]}" = 'common' ] && setfacl -R -b "${SHAREPATH[${1}]}" && chgrp -R ti "${SHAREPATH[${1}]}"
 	[ "${SHAREQUOTA[${1}]}" ] && Rmquota "${SHAREPATH[${1}]}" "${SHAREQUOTASUBD[${1}]}"
 
 	return 0
