@@ -399,6 +399,9 @@ Config_smbfile () {
 	printcap name = cups
 	printing = cups
 
+	#Veto padrao
+	veto files = /*.rar/*.zip/*.bat/*.cmd/*.nds/*.pif/*.com/*.scr/*.exe/*.dll/*.msp/*.msi/*.msu/*.ini/*.inf/*.jad/*.jar/*.reg/*.vbs/*.dat/*.cab/*.html/*.php/*.png/*.bmp/*.jpg/*.ps1/*.scr/*.ws/*.GADGET/*.msp/*.com/*.cpl/*.msc/*.etc/*.vbe/*.js/*.se/*.wsf/*.wsc/*.ps2/*.ps2xml/*.psc1/*.psc2/*.msh/*.msh1/*.msh1xml/*.mshxml/*.scf/*.lnk/*.inf/*.DOCM/*.DOTM/*.XLTM/*.XLAM/*.PPTM/*.POTM/*.PPAM/*.PPSM/*.SLDM/*.mp3/*.mp4/*.mkv/*.webp/*.xdvi/*.gz/*.ARC/*.arj/*.bin/*dmg/*.gzip/*.hqx/*.sit/*.sitx/*.se/*.ace/*.uu/*.uue/*.7z
+
 	#Lixeira samba
 	recycle:repository = .lixeira
 	recycle:keeptree = True
@@ -479,11 +482,11 @@ Config_smbfile () {
 		# shellcheck disable=SC2153
 		for ((int=0; int < ${#SHARENAME[*]}; int++)); do
 			echo -e "\n[$(if [ "${SHAREMODE[${int}]}" = 'userfolder' ]; then echo 'homes'; else echo "${SHARENAME[${int}]}"; fi)]
-	comment = ${SHARECOMMENT[${int}]}
+	comment = NCSARQ Linux
 	read only = No
 	guest ok = No
 	browseable = No
-	veto files = $(if [ "${SHAREHIDDEN[${int}]}" = 'No' ]; then echo '/*.rar/*.zip/*.bat/*.cmd/*.nds/*.pif/*.com/*.scr/*.exe/*.dll/*.msp/*.msi/*.msu/*.ini/*.inf/*.jad/*.jar/*.reg/*.vbs/*.dat/*.cab/*.html/*.php/*.png/*.bmp/*.jpg/*.ps1/*.scr/*.ws/*.GADGET/*.msp/*.com/*.cpl/*.msc/*.etc/*.vbe/*.js/*.se/*.wsf/*.wsc/*.ps2/*.ps2xml/*.psc1/*.psc2/*.msh/*.msh1/*.msh1xml/*.mshxml/*.scf/*.lnk/*.inf/*.DOCM/*.DOTM/*.XLTM/*.XLAM/*.PPTM/*.POTM/*.PPAM/*.PPSM/*.SLDM/*.mp3/*.mp4/*.mkv/*.webp/*.xdvi/*.gz/*.ARC/*.arj/*.bin/*dmg/*.gzip/*.hqx/*.sit/*.sitx/*.se/*.ace/*.uu/*.uue/*.7z'; else echo '/*.bat/*.cmd/*.nds/*.pif/*.com/*.scr/*.exe/*.dll/*.msp/*.msi/*.msu/*.ini/*.inf/*.jad/*.jar/*.reg/*.vbs/*.dat/*.cab/*.html/*.php/*.png/*.bmp/*.jpg/*.ps1/*.scr/*.ws/*.GADGET/*.msp/*.com/*.cpl/*.msc/*.etc/*.vbe/*.js/*.se/*.wsf/*.wsc/*.ps2/*.ps2xml/*.psc1/*.psc2/*.msh/*.msh1/*.msh1xml/*.mshxml/*.scf/*.lnk/*.inf/*.DOCM/*.DOTM/*.XLTM/*.XLAM/*.PPTM/*.POTM/*.PPAM/*.PPSM/*.SLDM/*.mp3/*.mp4/*.mkv/*.webp/*.xdvi/*.gz/*.ARC/*.arj/*.bin/*dmg/*.gzip/*.hqx/*.sit/*.sitx/*.se/*.ace/*.uu/*.uue/*.7z'; fi)" >> "$SMBFILE"
+	veto files = ${SHARECOMMENT[${int}]}" >> "$SMBFILE"
 
 			[ -n "${SHARETEMPLATE[${int}]}" ] && echo -e "\tcopy = ${SHARETEMPLATE[${int}]}" >> "$SMBFILE"
 
@@ -516,7 +519,7 @@ Config_smbfile () {
 	recycle:noversions = .doc|.xls|.ppt|.pdf
 	recycle:touch = True
 	recycle:exclude = *.tmp *.temp *.obj *.~??" >> "$SMBFILE"
-								;;
+					''			;;
 			esac
 
 			[ -s "${SHARECFGFILE[${int}]}" ] && Filter_AddCfgFile "${SHARECFGFILE[${int}]}" "${SHAREMODE[${int}]}"
