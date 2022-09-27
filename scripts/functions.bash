@@ -399,17 +399,15 @@ Config_smbfile () {
 	printcap name = cups
 	printing = cups
 
-	#Veto padrao
+	# Veto padrao
 	veto files = /*.rar/*.zip/*.bat/*.cmd/*.nds/*.pif/*.com/*.scr/*.exe/*.dll/*.msp/*.msi/*.msu/*.ini/*.inf/*.jad/*.jar/*.reg/*.vbs/*.dat/*.cab/*.html/*.php/*.png/*.bmp/*.jpg/*.ps1/*.scr/*.ws/*.GADGET/*.msp/*.com/*.cpl/*.msc/*.etc/*.vbe/*.js/*.se/*.wsf/*.wsc/*.ps2/*.ps2xml/*.psc1/*.psc2/*.msh/*.msh1/*.msh1xml/*.mshxml/*.scf/*.lnk/*.inf/*.DOCM/*.DOTM/*.XLTM/*.XLAM/*.PPTM/*.POTM/*.PPAM/*.PPSM/*.SLDM/*.mp3/*.mp4/*.mkv/*.webp/*.xdvi/*.gz/*.ARC/*.arj/*.bin/*dmg/*.gzip/*.hqx/*.sit/*.sitx/*.se/*.ace/*.uu/*.uue/*.7z
 
-	#Lixeira samba
-	recycle:repository = .lixeira
-	recycle:keeptree = True
-	recycle:maxsize = 0
-	recycle:versions = True
-	recycle:noversions = .doc|.xls|.ppt|.pdf
-	recycle:touch = True
-	recycle:exclude = *.tmp *.temp *.obj *.~??
+	# Auditoria
+	full_audit:prefix = %I|%m|<span class='border rounded bg-primary text-light p-1'>%U</span>
+	full_audit:success = mkdirat renameat unlinkat
+	full_audit:failure =  none
+	full_audit:facility = LOCAL7
+	full_audit:priority = ALERT
 
 	# Kerberos settings
 	realm = ${FQDN^^}
@@ -511,7 +509,7 @@ Config_smbfile () {
 									echo "	path = \"${SHAREPATH[${int}]}\"
 	map acl inherit = Yes
 	store dos attributes = Yes
-	vfs objects = acl_xattr recycle
+	vfs objects = acl_xattr recycle full_audit
 	recycle:repository = .lixeira
 	recycle:keeptree = True
 	recycle:maxsize = 0
