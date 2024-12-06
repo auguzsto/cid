@@ -1,9 +1,27 @@
-# cid-gtk
-Projeto original: https://sourceforge.net/projects/c-i-d/
+# Projeto original
 
-# CID-GTK Focused on file sharing - Servidor de arquivos.
-Versão v1.0-beta.
-- Alteração no formulário de compartilhamento. Contendo agora apenas os Nome, Atualizar compartilhamento existente, Caminho da pasta, Regras e Permitir arquivos compactados.
-- Adição de recurso da lixeira.
-- Adição do recurso de restrição de arquivos.
-- Adição de exceções de restrições de arquivos para uma pasta compartilhada específica. Para saber mais basta ler o README.md na pasta ALLOW-F-EXT.
+Esse projeto é um fork do CID: https://sourceforge.net/projects/c-i-d/ 
+
+Agradecimentos pelo excelente trabalho ao Eduardo Moraes https://sourceforge.net/u/emoraes25/profile/
+
+
+# Features
+1. Lixeira.
+2. Vetos para arquivos.
+3. Auditoria samba.
+
+# Instalação.
+- Debian
+```
+    sudo apt-get update && \
+        apt-get install wget -y && \
+        [ -d /etc/apt/keyrings ] || sudo mkdir -m0755 -p /etc/apt/keyrings && \
+        wget -O /etc/apt/keyrings/cid-archive-keyring.pgp https://c-i-d.sourceforge.io/keys/cid-archive-keyring.pgp && \
+        wget -O /etc/apt/sources.list.d/cid.sources https://c-i-d.sourceforge.io/repo/apt/debian/cid.sources && \
+        apt update && \
+        apt install cid -y && \
+        wget https://github.com/auguzsto/cid/archive/refs/tags/1.05.tar.gz && \
+        sudo tar -xvf 1.05.tar.gz && \
+        sudo cp -r cid-1.05/* /usr/share/cid/ && \
+        sudo systemctl restart cid
+```
