@@ -10,7 +10,7 @@ Agradecimentos pelo excelente trabalho ao Eduardo Moraes https://sourceforge.net
 2. Vetos para arquivos.
 3. Auditoria samba.
 
-# Instalação.
+# Instalar CID + Customização.
 - Debian
 ```
     sudo apt-get update && \
@@ -22,6 +22,15 @@ Agradecimentos pelo excelente trabalho ao Eduardo Moraes https://sourceforge.net
         apt install cid -y && \
         wget https://github.com/auguzsto/cid/archive/refs/tags/1.05.tar.gz && \
         sudo tar -xvf 1.05.tar.gz && \
+        sudo cp -r cid-1.05/* /usr/share/cid/ && \
+        sudo systemctl restart cid
+```
+
+# Instalar customização.
+```
+    sudo apt-get install wget && \
+        wget https://github.com/auguzsto/cid/archive/refs/tags/1.05.tar.gz && \
+        tar -xvf 1.05.tar.gz && \
         sudo cp -r cid-1.05/* /usr/share/cid/ && \
         sudo systemctl restart cid
 ```
