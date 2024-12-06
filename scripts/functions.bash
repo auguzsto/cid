@@ -2153,7 +2153,7 @@ Addshare () {
 
 				# shellcheck disable=SC2119
 				chgrp -R "$(Get_AdminsGroup)" "$sharepath"
-				chmod 771 "$sharepath"
+				chmod 770 "$sharepath"
 			fi
 
 			setfacl -R -${crt:-m} "$sharerule" "$sharepath"
